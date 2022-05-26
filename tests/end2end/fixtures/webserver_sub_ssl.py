@@ -26,6 +26,7 @@ import ssl
 import sys
 import logging
 import pathlib
+import warnings
 
 import flask
 
@@ -70,6 +71,14 @@ def turn_off_logging():
 
 
 def main():
+    for module in ["werkzeug.serving", "flask.app"]:
+        warnings.filterwarnings(
+            "ignore",
+            r"unclosed <socket\.socket",
+            ResourceWarning,
+            module,
+        )
+
     end2end_dir = pathlib.Path(__file__).resolve().parents[1]
     ssl_dir = end2end_dir / 'data' / 'ssl'
     context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
