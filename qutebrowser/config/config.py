@@ -559,15 +559,18 @@ class Config(QObject):
                 self.set_obj(name, new_value, save_yaml=save_yaml)
         self._mutables = {}
 
-    def dump_userconfig(self) -> str:
+    def dump_userconfig(self, *, include_hidden: bool = False) -> str:
         """Get the part of the config which was changed by the user.
+
+        Args:
+            include_hidden: Include default scoped configs.
 
         Return:
             The changed config part as string.
         """
         lines: List[str] = []
         for values in sorted(self, key=lambda v: v.opt.name):
-            lines += values.dump()
+            lines += values.dump(include_hidden=include_hidden)
 
         if not lines:
             return '<Default configuration>'
